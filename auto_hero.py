@@ -1,88 +1,96 @@
 import arcade
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-SCREEN_TITLE = "AUTO_HERO"
+# Set how many rows and columns we will have
+ROW_COUNT = 2
+COLUMN_COUNT = 4
+
+# This sets the WIDTH and HEIGHT of each grid location
+WIDTH = 120
+HEIGHT = 120
+
+# This sets the margin between each cell
+# and on the edges of the screen.
+MARGIN = 5
+
+# Do the math to figure out our screen dimensions
+SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
+SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+SCREEN_TITLE = "Array Backed Grid Example"
 
 
 class MyGame(arcade.Window):
     """
     Main application class.
-
-    NOTE: Go ahead and delete the methods you don't need.
-    If you do need a method, delete the 'pass' and replace it
-    with your own code. Don't leave 'pass' in this program.
     """
 
     def __init__(self, width, height, title):
+        """
+        Set up the application.
+        """
+
         super().__init__(width, height, title)
 
-        arcade.set_background_color(arcade.color.GRAY)
+        # Create a 2 dimensional array. A two dimensional
+        # array is simply a list of lists.
+        self.grid = []
+        for row in range(ROW_COUNT):
+            # Add an empty array that will hold each cell
+            # in this row
+            self.grid.append([])
+            for column in range(COLUMN_COUNT):
+                self.grid[row].append(0)  # Append a cell
 
-        # If you have sprite lists, you should create them here,
-        # and set them to None
-
-    def setup(self):
-        # Create your sprites and sprite lists here
-        pass
+        arcade.set_background_color(arcade.color.BLACK)
 
     def on_draw(self):
         """
         Render the screen.
         """
 
-        # This command should happen before we start drawing. It will clear
-        # the screen to the background color, and erase what we drew last frame.
+        # This command has to happen before we start drawing
         arcade.start_render()
 
-        # Call draw() on all your sprite lists below
+        # Draw the grid
+        for row in range(ROW_COUNT):
+            for column in range(COLUMN_COUNT):
+                # Figure out what color to draw the box
+                if self.grid[row][column] == 1:
+                    color = arcade.color.GREEN
+                else:
+                    color = arcade.color.WHITE
 
-    def update(self, delta_time):
-        """
-        All the logic to move, and the game logic goes here.
-        Normally, you'll call update() on the sprite lists that
-        need it.
-        """
-        pass
+                # Do the math to figure out where the box is
+                x = (MARGIN + WIDTH) * column + MARGIN + WIDTH // 2
+                y = (MARGIN + HEIGHT) * row + MARGIN + HEIGHT // 2
 
-    def on_key_press(self, key, key_modifiers):
-        """
-        Called whenever a key on the keyboard is pressed.
+                # Draw the box
+                arcade.draw_rectangle_filled(x, y, WIDTH, HEIGHT, color)
 
-        For a full list of keys, see:
-        http://arcade.academy/arcade.key.html
-        """
-        pass
-
-    def on_key_release(self, key, key_modifiers):
-        """
-        Called whenever the user lets off a previously pressed key.
-        """
-        pass
-
-    def on_mouse_motion(self, x, y, delta_x, delta_y):
-        """
-        Called whenever the mouse moves.
-        """
-        pass
-
-    def on_mouse_press(self, x, y, button, key_modifiers):
+    def on_mouse_press(self, x, y, button, modifiers):
         """
         Called when the user presses a mouse button.
         """
-        pass
 
-    def on_mouse_release(self, x, y, button, key_modifiers):
-        """
-        Called when a user releases a mouse button.
-        """
-        pass
+        # Change the x/y screen coordinates to grid coordinates
+        column = x // (WIDTH + MARGIN)
+        row = y // (HEIGHT + MARGIN)
+
+        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
+
+        # Make sure we are on-grid. It is possible to click in the upper right
+        # corner in the margin and go to a grid location that doesn't exist
+        if row < ROW_COUNT and column < COLUMN_COUNT:
+
+            # Flip the location between 1 and 0.
+            if self.grid[row][column] == 0:
+                self.grid[row][column] = 1
+            else:
+                self.grid[row][column] = 0
 
 
 def main():
-    """ Main method """
-    game = MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    game.setup()
+
+    MyGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 
