@@ -18,7 +18,7 @@ class ModelSprite(arcade.Sprite):
         self.syc_with_model()
         super().draw()
 
-class SpaceGameWindow(arcade.Window):
+class GameWindow(arcade.Window):
     def __init__(self, width, height):
         super().__init__(width, height) 
         arcade.set_background_color(arcade.color.BLACK)
